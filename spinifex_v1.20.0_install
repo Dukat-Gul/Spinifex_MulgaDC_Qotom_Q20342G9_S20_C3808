@@ -40,19 +40,16 @@ Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ████████�
 Writing image to storage ...
 Could not import image: import: write image to ami-4f0be8fb2bae5acab: NBD socket /run/spinifex/nbd/nbd-ami-4f0be8fb2bae5acab-1790236683546364821.sock: stat /run/spinifex/nbd/nbd-ami-4f0be8fb2bae5acab-1790236683546364821.sock: permission denied
 
+##CHECKING 
+##put mac addr into dhcp-server for non-random allocation
+## This breaks the image import if done before the import
 
-spinifex_v1.19.0
-headless-boot
-e to edit
-changing hostname leave unchanged (breaks the installation)
-changing password leave unchanged
+spx admin images import --name ubuntu-26.04-x86_64
 
-put mac addr into dhcp-server for non-random allocation
-  
-spinifex@spinifex-node-01:~$ spx admin images import --name debian-13-x86_64
-Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 45s 
-✅ Verified image checksum (sha512)
+spx admin images import --name ubuntu-26.04-x86_64
+Downloading ubuntu-26.04-x86_64 — 824.4 MiB / 824.4 MiB █████████ 100% | 4m52s 
+✅ Verified image checksum (sha256)
 Writing image to storage ...
-Could not import image: import: write image to ami-cf1baa6c162a58536: NBD socket /run/spinifex/nbd/nbd-ami-cf1baa6c162a58536-1790237647795747651.sock: stat /run/spinifex/nbd/nbd-ami-cf1baa6c162a58536-1790237647795747651.sock: permission denied
+Could not import image: import: write image to ami-549bba1d9b9228afe: NBD socket /run/spinifex/nbd/nbd-ami-549bba1d9b9228afe-1790238856989656658.sock: stat /run/spinifex/nbd/nbd-ami-549bba1d9b9228afe-1790238856989656658.sock: permission denied
+BREAKS
 
-  
