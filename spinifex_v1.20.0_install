@@ -1,0 +1,58 @@
+headless-boot
+e to edit
+changing hostname breaks the installation.
+changing password from changeme is possibly a problem
+
+sudo dmesg | grep -E "c3xxx|qat"
+
+failed to load firmware is fixed by -
+sudo curl -fLo /lib/firmware/qat_c3xxx_mmp.bin https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/intel/qat/qat_c3xxx_mmp.bin
+sudo curl -fLo /lib/firmware/qat_c3xxx.bin https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/intel/qat/qat_c3xxx.bin
+
+follow; https://docs.mulgadc.com/docs/setting-up-your-cluster
+
+spinifex_v1.20.0:
+export AWS_PROFILE=spinifex
+spx admin images list
+NAME                             | DISTRO | VERSION | ARCH   | BOOT
+alpine-3.24.1-arm64              | alpine | 3.24.1  | arm64  | uefi
+alpine-3.24.1-x86_64             | alpine | 3.24.1  | x86_64 | uefi
+debian-13-arm64                  | debian | 13      | arm64  | uefi
+debian-13-x86_64                 | debian | 13      | x86_64 | uefi
+rocky-10-arm64                   | rocky  | 10      | arm64  | uefi
+rocky-10-x86_64                  | rocky  | 10      | x86_64 | uefi
+spinifex-ecs-node                | alpine | 3.21.7  | x86_64 | bios
+spinifex-ecs-node-gpu            | ubuntu | 26.04   | x86_64 | uefi
+spinifex-eks-node                | alpine | 3.21.7  | x86_64 | bios
+spinifex-eks-node-gpu            | ubuntu | 26.04   | x86_64 | uefi
+spinifex-rds-mariadb             | alpine | 3.24.1  | x86_64 | bios
+spinifex-rds-postgres            | alpine | 3.24.1  | x86_64 | bios
+ubuntu-26.04-amd-gpu-x86_64      | ubuntu | 26.04   | x86_64 | uefi
+ubuntu-26.04-arm64               | ubuntu | 26.04   | arm64  | uefi
+ubuntu-26.04-nvidia-gpu-x86_64   | ubuntu | 26.04   | x86_64 | uefi
+ubuntu-26.04-vllm-serving-x86_64 | ubuntu | 26.04   | x86_64 | uefi
+ubuntu-26.04-x86_64              | ubuntu | 26.04   | x86_64 | uefi
+
+
+spx admin images import --name debian-13-x86_64
+Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 44s 
+✅ Verified image checksum (sha512)
+Writing image to storage ...
+Could not import image: import: write image to ami-4f0be8fb2bae5acab: NBD socket /run/spinifex/nbd/nbd-ami-4f0be8fb2bae5acab-1790236683546364821.sock: stat /run/spinifex/nbd/nbd-ami-4f0be8fb2bae5acab-1790236683546364821.sock: permission denied
+
+
+spinifex_v1.19.0
+headless-boot
+e to edit
+changing hostname leave unchanged (breaks the installation)
+changing password leave unchanged
+
+put mac addr into dhcp-server for non-random allocation
+  
+spinifex@spinifex-node-01:~$ spx admin images import --name debian-13-x86_64
+Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 45s 
+✅ Verified image checksum (sha512)
+Writing image to storage ...
+Could not import image: import: write image to ami-cf1baa6c162a58536: NBD socket /run/spinifex/nbd/nbd-ami-cf1baa6c162a58536-1790237647795747651.sock: stat /run/spinifex/nbd/nbd-ami-cf1baa6c162a58536-1790237647795747651.sock: permission denied
+
+  
