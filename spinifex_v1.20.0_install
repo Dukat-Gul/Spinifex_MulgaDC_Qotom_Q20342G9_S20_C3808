@@ -1,7 +1,12 @@
 headless-boot
 e to edit
-changing hostname breaks the installation.
-changing password from changeme is possibly a problem
+Attempt 1: only change disk to auto.
+Attempt 2: change disk to auto, set IP, set hostname, set passwd.
+Attempt 3: change disk to auto, set IP, set hostname, set passwd, install c3xxx firmware (reboot)
+
+
+Checking: (with headless set IP/set hostname/set passwd) changing hostname breaks the installation.
+Checking: changing password from changeme is possibly a problem
 
 sudo dmesg | grep -E "c3xxx|qat"
 
@@ -11,7 +16,13 @@ sudo curl -fLo /lib/firmware/qat_c3xxx.bin https://git.kernel.org/pub/scm/linux/
 
 follow; https://docs.mulgadc.com/docs/setting-up-your-cluster
 
-spinifex_v1.20.0:
+Note: Not needed with Headless setip: put mac addr into dhcp-server for non-random allocation
+
+Not Needed: This breaks the image import if IP isnt updated in;
+Not Needed: sudo vi /etc/spinifex/spinifex.toml
+
+Not Needed: sudo systemctl restart spinifex-daemon
+
 export AWS_PROFILE=spinifex
 spx admin images list
 NAME                             | DISTRO | VERSION | ARCH   | BOOT
@@ -37,19 +48,12 @@ ubuntu-26.04-x86_64              | ubuntu | 26.04   | x86_64 | uefi
 spx admin images import --name debian-13-x86_64
 Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 44s 
 ✅ Verified image checksum (sha512)
-Writing image to storage ...
-Could not import image: import: write image to ami-4f0be8fb2bae5acab: NBD socket /run/spinifex/nbd/nbd-ami-4f0be8fb2bae5acab-1790236683546364821.sock: stat /run/spinifex/nbd/nbd-ami-4f0be8fb2bae5acab-1790236683546364821.sock: permission denied
 
-##CHECKING 
-##put mac addr into dhcp-server for non-random allocation
-## This breaks the image import if done before the import
 
 spx admin images import --name ubuntu-26.04-x86_64
 
-spx admin images import --name ubuntu-26.04-x86_64
-Downloading ubuntu-26.04-x86_64 — 824.4 MiB / 824.4 MiB █████████ 100% | 4m52s 
-✅ Verified image checksum (sha256)
-Writing image to storage ...
-Could not import image: import: write image to ami-549bba1d9b9228afe: NBD socket /run/spinifex/nbd/nbd-ami-549bba1d9b9228afe-1790238856989656658.sock: stat /run/spinifex/nbd/nbd-ami-549bba1d9b9228afe-1790238856989656658.sock: permission denied
-BREAKS
+
+aws ec2 create-key-pair --key-name C3758R.spinifex-key | jq -r '.KeyMaterial | rtrimstr("\n")' > ~/.ssh/C3758R.spinifex-key
+chmod 600 ~/.ssh/C3758R.spinifex-key
+ssh-keygen -y -f ~/.ssh/C3758R.spinifex-key > ~/.ssh/C3758R.spinifex-key.pub
 
