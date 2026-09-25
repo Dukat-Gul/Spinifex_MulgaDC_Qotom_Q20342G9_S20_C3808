@@ -1,30 +1,32 @@
 headless-boot
 e to edit
-Attempt 1: only change disk to auto.
-Attempt 2: change disk to auto, set IP, set hostname, set passwd.
-Attempt 3: change disk to auto, set IP, set hostname, set passwd, install c3xxx firmware (reboot)
+Attempt 1 Worked: only change disk to smallest. First boot. ssh and run below.
+Attempt 2A Failed: change disk to smallest, set hostname, set passwd. default IP
+Attempt 2B Worked: change disk to smallest, default hostname, set passwd. default IP
+Attempt 2C Worked: change disk to smallest, default hostname, set passwd. set wan static IP
+Attempt 2D FAILED : change disk to smallest, XXXset hostnameXXX, set passwd. set wan static IP
+Attempt 3 (2C) Worked: change disk to smallest, default hostname, set passwd. set wan static IP
+Attempt 4 Failed: change disk to smallest, default hostname, set passwd, set wan static IP, install c3xxx firmware (reboot, 2nd boot run below)
+Attempt 5 (2C) Failed: change disk to smallest, default hostname, set passwd. set wan static IP (reboot before steps)
+Attempt 6: change disk to smallest, default hostname, set passwd, set wan static IP, install c3xxx firmware (No-reboot, immediately run below)
 
 
-Checking: (with headless set IP/set hostname/set passwd) changing hostname breaks the installation.
-Checking: changing password from changeme is possibly a problem
+Attempt 4/6: sudo dmesg | grep -E "c3xxx|qat"
 
-sudo dmesg | grep -E "c3xxx|qat"
+Attempt 4/6: failed to load firmware is fixed by -
+Attempt 4/6: sudo curl -fLo /lib/firmware/qat_c3xxx_mmp.bin https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/intel/qat/qat_c3xxx_mmp.bin ; sudo curl -fLo /lib/firmware/qat_c3xxx.bin https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/intel/qat/qat_c3xxx.bin
 
-failed to load firmware is fixed by -
-sudo curl -fLo /lib/firmware/qat_c3xxx_mmp.bin https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/intel/qat/qat_c3xxx_mmp.bin
-sudo curl -fLo /lib/firmware/qat_c3xxx.bin https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/intel/qat/qat_c3xxx.bin
+Attempt 1,2,3,4: follow; https://docs.mulgadc.com/docs/setting-up-your-cluster
 
-follow; https://docs.mulgadc.com/docs/setting-up-your-cluster
-
-Note: Not needed with Headless setip: put mac addr into dhcp-server for non-random allocation
+Attempt None:Note: Not needed with Headless setip: put mac addr into dhcp-server for non-random allocation
 
 Not Needed: This breaks the image import if IP isnt updated in;
 Not Needed: sudo vi /etc/spinifex/spinifex.toml
 
 Not Needed: sudo systemctl restart spinifex-daemon
 
-export AWS_PROFILE=spinifex
-spx admin images list
+Attempt 1,2A/B/C/D,3,4: export AWS_PROFILE=spinifex
+Attempt 1,2A/B/C/D,3,4: spx admin images list
 NAME                             | DISTRO | VERSION | ARCH   | BOOT
 alpine-3.24.1-arm64              | alpine | 3.24.1  | arm64  | uefi
 alpine-3.24.1-x86_64             | alpine | 3.24.1  | x86_64 | uefi
@@ -45,15 +47,68 @@ ubuntu-26.04-vllm-serving-x86_64 | ubuntu | 26.04   | x86_64 | uefi
 ubuntu-26.04-x86_64              | ubuntu | 26.04   | x86_64 | uefi
 
 
-spx admin images import --name debian-13-x86_64
+Attempt 1 Worked: spx admin images import --name debian-13-x86_64
 Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 44s 
 ✅ Verified image checksum (sha512)
+Writing image to storage ...
+    (100.00/100%)
+✅ Image import complete. Image-ID (AMI): ami-054737ed0694b2f1e
+
+Attempt 2A Failed: spx admin images import --name debian-13-x86_64
+Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 44s 
+✅ Verified image checksum (sha512)
+Could not connect to the cluster: failed to connect to NATS: NATS connect failed: nats: Authorization Violation
+
+Attempt 2B Worked: spx admin images import --name debian-13-x86_64
+Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 44s 
+✅ Verified image checksum (sha512)
+Writing image to storage ...
+    (100.00/100%)
+✅ Image import complete. Image-ID (AMI): ami-054737ed0694b2f1e
+
+Attempt 2C (3) Worked: spx admin images import --name debian-13-x86_64
+Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 47s 
+✅ Verified image checksum (sha512)
+Writing image to storage ...
+    (100.00/100%)
+✅ Image import complete. Image-ID (AMI): ami-416c2d9e85e992b86
+
+Attempt 2D Failed (Hostname): spx admin images import --name debian-13-x86_64
+Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 44s 
+✅ Verified image checksum (sha512)
+Could not connect to the cluster: failed to connect to NATS: NATS connect failed: nats: no servers available for connection
+
+Attempt 4 Failed: spx admin images import --name debian-13-x86_64
+Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 44s 
+✅ Verified image checksum (sha512)
+Writing image to storage ...
+Could not import image: import: write image to ami-a91eb6bf670d9f6b3: NBD socket /run/spinifex/nbd/nbd-ami-a91eb6bf670d9f6b3-1790311966643099867.sock: stat /run/spinifex/nbd/nbd-ami-a91eb6bf670d9f6b3-1790311966643099867.sock: permission denied
+
+Attempt 5 Failed: spx admin images import --name debian-13-x86_64
+Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 45s 
+✅ Verified image checksum (sha512)
+Writing image to storage ...
+Could not import image: import: write image to ami-b0411dd72b3cfcad0: NBD socket /run/spinifex/nbd/nbd-ami-b0411dd72b3cfcad0-1790312488018451081.sock: stat /run/spinifex/nbd/nbd-ami-b0411dd72b3cfcad0-1790312488018451081.sock: permission denied
+
+
+Attempt 6A Worked (no-reboot): spx admin images import --name debian-13-x86_64
+Downloading debian-13-x86_64 — 218.4 MiB / 218.4 MiB ██████████████ 100% | 52s 
+✅ Verified image checksum (sha512)
+Writing image to storage ...
+    (100.00/100%)
+✅ Image import complete. Image-ID (AMI): ami-110ad6307090b8c8a
+Attempt 6B (reboot after debian-13-x86_64 worked): export AWS_PROFILE=spinifex;spx admin images import --name ubuntu-26.04-x86_64
 
 
 spx admin images import --name ubuntu-26.04-x86_64
 
 
-aws ec2 create-key-pair --key-name C3758R.spinifex-key | jq -r '.KeyMaterial | rtrimstr("\n")' > ~/.ssh/C3758R.spinifex-key
-chmod 600 ~/.ssh/C3758R.spinifex-key
-ssh-keygen -y -f ~/.ssh/C3758R.spinifex-key > ~/.ssh/C3758R.spinifex-key.pub
+Attempt 1 Worked: aws ec2 create-key-pair --key-name C3758R.spinifex-key | jq -r '.KeyMaterial | rtrimstr("\n")' > ~/.ssh/C3758R.spinifex-key
+Attempt 1 Worked: chmod 600 ~/.ssh/C3758R.spinifex-key
+Attempt 1 Worked: ssh-keygen -y -f ~/.ssh/C3758R.spinifex-key > ~/.ssh/C3758R.spinifex-key.pub
+
+
+Attempt 1 Worked: aws ec2 describe-key-pairs
+Attempt 1 Worked: (Web interface) create 50G volume
+Attempt 1 Worked: (Web interface) create instance (select exsiting: subnet, security group) 
 
